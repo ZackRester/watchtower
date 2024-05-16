@@ -9,14 +9,14 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
-      - 8080:8080
+      - 8090:8080
     command: --interval 10 --http-api-metrics --http-api-token demotoken --debug prometheus grafana parent child
   prometheus:
     container_name: prometheus
     image: prom/prometheus
     volumes:
-      - ./prometheus/:/etc/prometheus/
-      - prometheus:/prometheus/
+      - /var/lib/docker/volumes/prometheus-etc/:/etc/prometheus/
+      - /var/lib/docker/volumes/prometheus:/prometheus/
     ports:
       - 9090:9090
   grafana:
@@ -27,8 +27,8 @@ services:
     environment:
       GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource
     volumes:
-      - grafana:/var/lib/grafana
-      - ./grafana:/etc/grafana/provisioning
+      - /var/lib/docker/volumes/grafana:/var/lib/grafana
+      - /var/lib/docker/volumes/grafana-provisioning:/etc/grafana/provisioning
   parent:
     image: nginx
     container_name: parent
